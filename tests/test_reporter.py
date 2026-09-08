@@ -1,12 +1,10 @@
-import pytest
-from pathlib import Path
 from decimal import Decimal
-from datetime import datetime
 
 import openpyxl
+import pytest
 
+from foxprice.core.models import ErrorResult, PricedResult, PriceOffer, RunSummary
 from foxprice.core.reporter import Reporter
-from foxprice.core.models import PriceOffer, PricedResult, ErrorResult, RunSummary
 
 
 @pytest.fixture
@@ -36,9 +34,7 @@ def offer() -> PriceOffer:
 
 @pytest.fixture
 def priced(offer) -> list[PricedResult]:
-    return [
-        PricedResult(offer=offer, markup_pct=Decimal("200"), final_price=Decimal("15.00"))
-    ]
+    return [PricedResult(offer=offer, markup_pct=Decimal("200"), final_price=Decimal("15.00"))]
 
 
 @pytest.fixture

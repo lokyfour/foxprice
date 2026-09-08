@@ -160,6 +160,7 @@ from foxprice.core.base_adapter import BaseAdapter
 from foxprice.core.models import PriceOffer, ErrorResult
 from decimal import Decimal
 
+
 class MySupplierAdapter(BaseAdapter):
     SUPPLIER_NAME = "my_supplier"
     ADAPTER_TIMEOUT_SEC = 1800  # 30 min hard ceiling for the whole run
@@ -185,12 +186,14 @@ class MySupplierAdapter(BaseAdapter):
             await page.goto(f"https://example.com/search?q={part_number}", timeout=20_000)
             price_text = await page.inner_text("td.price")
             price = Decimal(price_text.replace("$", "").strip())
-            return [PriceOffer(
-                supplier=self.SUPPLIER_NAME,
-                part_number=part_number,
-                matched_part=part_number,
-                unit_price=price,
-            )], []
+            return [
+                PriceOffer(
+                    supplier=self.SUPPLIER_NAME,
+                    part_number=part_number,
+                    matched_part=part_number,
+                    unit_price=price,
+                )
+            ], []
         except Exception as exc:
             return [], [ErrorResult(self.SUPPLIER_NAME, part_number, "parse_error", str(exc))]
         finally:
@@ -201,6 +204,7 @@ Register in `main.py`:
 
 ```python
 from foxprice.adapters.my_supplier import MySupplierAdapter
+
 ADAPTERS = [MySupplierAdapter()]
 ```
 

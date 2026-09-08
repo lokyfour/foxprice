@@ -128,9 +128,7 @@ async def run(
 
     async def _run_bounded(adapter: BaseAdapter) -> None:
         async with asyncio.timeout(adapter.ADAPTER_TIMEOUT_SEC):
-            await _run_adapter(
-                browser, adapter, part_queue, result_queue, session_mgr, engine
-            )
+            await _run_adapter(browser, adapter, part_queue, result_queue, session_mgr, engine)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)

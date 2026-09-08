@@ -45,9 +45,7 @@ def get_breaker(supplier: str) -> CircuitBreaker:
     before_sleep=before_sleep_log(logger, "WARNING"),
     reraise=True,
 )
-async def with_retry(
-    fn: Callable[..., Coroutine[Any, Any, Any]], *args: Any, **kwargs: Any
-) -> Any:
+async def with_retry(fn: Callable[..., Coroutine[Any, Any, Any]], *args: Any, **kwargs: Any) -> Any:
     return await fn(*args, **kwargs)
 
 

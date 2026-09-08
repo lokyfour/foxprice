@@ -46,6 +46,7 @@ app.mount("/static", StaticFiles(directory=str(Path(__file__).parent / "static")
 
 # --- Auth helpers ---
 
+
 def create_access_token(username: str) -> str:
     payload = {
         "sub": username,
@@ -79,7 +80,9 @@ async def get_current_user(request: Request) -> str:
     try:
         payload = jwt.decode(token, settings.web_secret_key, algorithms=[ALGORITHM])
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid or expired token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid or expired token"
+        )
 
     return payload["sub"]
 
@@ -92,6 +95,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 
 # --- Auth routes ---
+
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -111,9 +115,7 @@ async def login(request: Request):
             row = await cursor.fetchone()
 
     if row is None or not bcrypt.checkpw(password.encode(), row[0].encode()):
-        return TEMPLATES.TemplateResponse(
-            request, "login.html", {"error": "Invalid credentials"}
-        )
+        return TEMPLATES.TemplateResponse(request, "login.html", {"error": "Invalid credentials"})
 
     access_token = create_access_token(username)
     refresh_token = create_refresh_token(username)
@@ -148,6 +150,7 @@ async def logout():
 
 # --- Dashboard routes ---
 
+
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, user: str = Depends(get_current_user)):
     runs = await get_runs()
@@ -156,9 +159,7 @@ async def dashboard(request: Request, user: str = Depends(get_current_user)):
 
 @app.get("/runs/{run_id}", response_class=HTMLResponse)
 async def run_detail(request: Request, run_id: str, user: str = Depends(get_current_user)):
-    return TEMPLATES.TemplateResponse(
-        request, "run_detail.html", {"run_id": run_id}
-    )
+    return TEMPLATES.TemplateResponse(request, "run_detail.html", {"run_id": run_id})
 
 
 @app.get("/runs/{run_id}/stream")
@@ -212,6 +213,7 @@ async def stop_run_route(run_id: str, user: str = Depends(get_current_user)):
 
 
 # --- Pricing tiers routes ---
+
 
 @app.get("/tiers", response_class=HTMLResponse)
 async def tiers_page(request: Request, user: str = Depends(get_current_user)):

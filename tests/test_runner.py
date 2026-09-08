@@ -1,8 +1,8 @@
-import pytest
-import asyncio
-from unittest.mock import patch, AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from foxprice.web.runner import launch_run, stop_run, ALLOWED_SUPPLIERS
+import pytest
+
+from foxprice.web.runner import launch_run, stop_run
 from foxprice.web.sse import _buses
 
 pytestmark = pytest.mark.asyncio
@@ -32,7 +32,9 @@ async def test_launch_run_creates_sse_bus(clean_state):
     with (
         patch("foxprice.web.runner.insert_run", AsyncMock()),
         patch("foxprice.web.runner.update_run", AsyncMock()),
-        patch("foxprice.web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)),
+        patch(
+            "foxprice.web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)
+        ),
     ):
         await launch_run("r002", 5, ["sup_a"], skip=[])
 
@@ -57,7 +59,9 @@ async def test_launch_run_publishes_stdout_lines(clean_state):
         patch("foxprice.web.runner.remove_bus"),
         patch("foxprice.web.runner.insert_run", AsyncMock()),
         patch("foxprice.web.runner.update_run", AsyncMock()),
-        patch("foxprice.web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)),
+        patch(
+            "foxprice.web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)
+        ),
     ):
         await launch_run("r003", 2, ["sup_a"], skip=[])
 

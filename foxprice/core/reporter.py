@@ -156,6 +156,8 @@ class Reporter:
 
     def _autosize(self, ws: Worksheet) -> None:
         for column_cells in ws.columns:
-            length = max(len(str(cell.value)) if cell.value is not None else 0 for cell in column_cells)
+            length = max(
+                len(str(cell.value)) if cell.value is not None else 0 for cell in column_cells
+            )
             col_letter = column_cells[0].column_letter
             ws.column_dimensions[col_letter].width = min(length + 4, 50)

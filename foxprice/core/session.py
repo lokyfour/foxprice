@@ -48,8 +48,7 @@ class SessionManager:
         path = SESSION_DIR / f"{adapter.SUPPLIER_NAME}.json"
         if path.exists():
             logger.info(
-                f"{adapter.SUPPLIER_NAME}: session file found, will restore on "
-                "next_context()"
+                f"{adapter.SUPPLIER_NAME}: session file found, will restore on next_context()"
             )
             return True
         return False

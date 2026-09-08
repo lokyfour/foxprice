@@ -51,7 +51,9 @@ class SseBus:
             try:
                 queue.put_nowait(None)
             except asyncio.QueueFull:
-                logger.warning(f"{self.run_id}: subscriber queue full, could not deliver close sentinel")
+                logger.warning(
+                    f"{self.run_id}: subscriber queue full, could not deliver close sentinel"
+                )
         self._subscribers.clear()
 
 

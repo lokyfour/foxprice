@@ -1,18 +1,18 @@
-import pytest
-import pytest_asyncio
-import asyncio
-import aiosqlite
 from pathlib import Path
 from unittest.mock import patch
 
+import aiosqlite
+import pytest
+import pytest_asyncio
+
 from foxprice.web.db import (
-    init_db,
-    get_tiers,
-    upsert_tier,
     delete_tier,
     get_runs,
+    get_tiers,
+    init_db,
     insert_run,
     update_run,
+    upsert_tier,
 )
 
 pytestmark = pytest.mark.asyncio

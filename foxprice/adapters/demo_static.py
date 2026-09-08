@@ -48,9 +48,7 @@ class DemoStaticAdapter(BaseAdapter):
 
                 title = (await title_el.inner_text()).strip()
                 price_text = (await price_el.inner_text()).strip()
-                cleaned = (
-                    price_text.replace("Â£", "").replace("£", "").replace(",", "").strip()
-                )
+                cleaned = price_text.replace("Â£", "").replace("£", "").replace(",", "").strip()
                 unit_price = Decimal(cleaned)
 
                 offers.append(

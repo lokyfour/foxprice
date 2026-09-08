@@ -1,13 +1,12 @@
 import itertools
-import pytest
 from decimal import Decimal
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
+import pytest
 from playwright.async_api import TimeoutError as PWTimeout
 
-from foxprice.adapters.demo_static import DemoStaticAdapter, BOOK_TITLE, BOOK_PRICE
-from foxprice.adapters.demo_auth import DemoAuthAdapter, PRODUCT_TITLE, PRODUCT_PRICE
-from foxprice.core.models import PriceOffer, ErrorResult
+from foxprice.adapters.demo_auth import PRODUCT_PRICE, PRODUCT_TITLE, DemoAuthAdapter
+from foxprice.adapters.demo_static import BOOK_PRICE, BOOK_TITLE, DemoStaticAdapter
 
 pytestmark = pytest.mark.asyncio
 
@@ -62,9 +61,7 @@ async def test_demo_static_login_is_noop():
 
 
 async def test_demo_static_fetch_returns_offers():
-    cards = [
-        make_card("Book Title", "£12.99", BOOK_TITLE, BOOK_PRICE) for _ in range(3)
-    ]
+    cards = [make_card("Book Title", "£12.99", BOOK_TITLE, BOOK_PRICE) for _ in range(3)]
     page = make_page(cards)
     ctx = make_context(page)
 
@@ -163,10 +160,7 @@ async def test_demo_auth_is_session_expired_true():
 
 
 async def test_demo_auth_fetch_returns_offers():
-    cards = [
-        make_card("Product Title", "$29.99", PRODUCT_TITLE, PRODUCT_PRICE)
-        for _ in range(3)
-    ]
+    cards = [make_card("Product Title", "$29.99", PRODUCT_TITLE, PRODUCT_PRICE) for _ in range(3)]
     page = make_page(cards)
     ctx = make_context(page)
 

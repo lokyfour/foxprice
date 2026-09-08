@@ -1,14 +1,12 @@
-import pytest
-from decimal import Decimal
 from datetime import datetime
-from foxprice.core.models import PriceOffer, PricedResult, ErrorResult, RunSummary, ErrorType
+from decimal import Decimal
 from typing import get_args
+
+from foxprice.core.models import ErrorResult, ErrorType, PricedResult, PriceOffer, RunSummary
 
 
 def test_price_offer_defaults():
-    offer = PriceOffer(
-        supplier="s", part_number="p", matched_part="p", unit_price=Decimal("1.00")
-    )
+    offer = PriceOffer(supplier="s", part_number="p", matched_part="p", unit_price=Decimal("1.00"))
     assert offer.currency == "USD"
     assert offer.warehouse_code == ""
     assert offer.lead_time_days is None
@@ -18,20 +16,14 @@ def test_price_offer_defaults():
 
 
 def test_price_offer_unit_price_is_decimal():
-    offer = PriceOffer(
-        supplier="s", part_number="p", matched_part="p", unit_price=Decimal("9.99")
-    )
+    offer = PriceOffer(supplier="s", part_number="p", matched_part="p", unit_price=Decimal("9.99"))
     assert isinstance(offer.unit_price, Decimal)
     assert type(offer.unit_price) is not float
 
 
 def test_priced_result_fields():
-    offer = PriceOffer(
-        supplier="s", part_number="p", matched_part="p", unit_price=Decimal("9.99")
-    )
-    result = PricedResult(
-        offer=offer, markup_pct=Decimal("200"), final_price=Decimal("29.97")
-    )
+    offer = PriceOffer(supplier="s", part_number="p", matched_part="p", unit_price=Decimal("9.99"))
+    result = PricedResult(offer=offer, markup_pct=Decimal("200"), final_price=Decimal("29.97"))
     assert result.offer is offer
     assert result.markup_pct == Decimal("200")
     assert result.final_price == Decimal("29.97")
@@ -40,9 +32,7 @@ def test_priced_result_fields():
 
 
 def test_error_result_defaults():
-    err = ErrorResult(
-        supplier="s", part_number="p", error_type="timeout", description="test"
-    )
+    err = ErrorResult(supplier="s", part_number="p", error_type="timeout", description="test")
     assert err.attempt == 1
     assert isinstance(err.timestamp, datetime)
 

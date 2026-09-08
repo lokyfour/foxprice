@@ -4,10 +4,10 @@ Uses aiosqlite with WAL mode so the web panel and orchestrator can
 read/write concurrently without locking the whole database.
 """
 
-import aiosqlite
-import bcrypt
 from pathlib import Path
 
+import aiosqlite
+import bcrypt
 from loguru import logger
 
 DB_PATH = Path("web/foxprice.db")

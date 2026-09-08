@@ -1,7 +1,8 @@
-import pytest
 from decimal import Decimal, InvalidOperation
 
-from foxprice.core.pricing import PricingEngine, PricingTier
+import pytest
+
+from foxprice.core.pricing import PricingEngine
 
 
 @pytest.fixture
@@ -54,9 +55,7 @@ def test_decimal_from_string_not_float():
 
 def test_from_rows_builds_correctly(engine):
     assert len(engine.tiers) == 4
-    assert [t.price_from for t in engine.tiers] == sorted(
-        t.price_from for t in engine.tiers
-    )
+    assert [t.price_from for t in engine.tiers] == sorted(t.price_from for t in engine.tiers)
 
 
 def test_invalid_row_raises():

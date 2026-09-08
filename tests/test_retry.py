@@ -1,7 +1,7 @@
-import pytest
 import asyncio
 from unittest.mock import AsyncMock, patch
 
+import pytest
 from aiobreaker import CircuitBreakerError
 from playwright._impl._errors import TimeoutError as PWTimeout
 
@@ -32,9 +32,7 @@ async def test_with_retry_retries_on_pw_timeout(mock_sleep):
 
 @_PATCH_SLEEP
 async def test_with_retry_retries_on_asyncio_timeout(mock_sleep):
-    mock = AsyncMock(
-        side_effect=[asyncio.TimeoutError(), asyncio.TimeoutError(), "ok"]
-    )
+    mock = AsyncMock(side_effect=[asyncio.TimeoutError(), asyncio.TimeoutError(), "ok"])
     result = await with_retry(mock)
     assert result == "ok"
     assert mock.call_count == 3
@@ -70,8 +68,6 @@ async def test_get_breaker_different_suppliers():
 @patch("foxprice.core.retry._breakers", {})
 async def test_circuit_breaker_opens_after_failures():
     breaker = get_breaker("test_open_supplier")
-    with patch.object(
-        breaker, "call_async", AsyncMock(side_effect=CircuitBreakerError("open"))
-    ):
+    with patch.object(breaker, "call_async", AsyncMock(side_effect=CircuitBreakerError("open"))):
         with pytest.raises(CircuitBreakerError):
             await breaker.call_async(AsyncMock())

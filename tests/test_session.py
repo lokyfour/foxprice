@@ -1,10 +1,11 @@
-import pytest
 import json
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from foxprice.core.session import SessionManager, SESSION_DIR
+import pytest
+
 from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.session import SessionManager
 
 pytestmark = pytest.mark.asyncio
 

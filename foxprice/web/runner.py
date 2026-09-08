@@ -14,9 +14,9 @@ import asyncio
 
 from loguru import logger
 
-from foxprice.web.sse import create_bus, remove_bus, get_bus
-from foxprice.web.db import insert_run, update_run
 from foxprice.settings import settings
+from foxprice.web.db import insert_run, update_run
+from foxprice.web.sse import create_bus, get_bus, remove_bus
 
 ALLOWED_SUPPLIERS: set[str] = set()
 

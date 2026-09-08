@@ -1,12 +1,12 @@
-import pytest
-import asyncio
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from foxprice.core.orchestrator import run
-from foxprice.core.models import PriceOffer, ErrorResult, PricedResult, RunSummary
-from foxprice.core.pricing import PricingEngine, PricingTier
+import pytest
+
 from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.models import PricedResult, PriceOffer, RunSummary
+from foxprice.core.orchestrator import run
+from foxprice.core.pricing import PricingEngine, PricingTier
 
 pytestmark = pytest.mark.asyncio
 
@@ -75,9 +75,7 @@ async def test_run_returns_correct_types(mock_adapter, pricing_engine, tmp_path)
         patch("foxprice.core.orchestrator.async_playwright", mock_pw),
         patch("foxprice.core.orchestrator.SESSION_DIR", tmp_path / ".sessions"),
     ):
-        priced, errors, summary = await run(
-            [mock_adapter], ["PART-001"], pricing_engine
-        )
+        priced, errors, summary = await run([mock_adapter], ["PART-001"], pricing_engine)
 
     assert isinstance(summary, RunSummary)
     assert isinstance(priced, list)
@@ -104,9 +102,7 @@ async def test_run_summary_fields(mock_adapter, pricing_engine, tmp_path):
         patch("foxprice.core.orchestrator.async_playwright", mock_pw),
         patch("foxprice.core.orchestrator.SESSION_DIR", tmp_path / ".sessions"),
     ):
-        priced, errors, summary = await run(
-            [mock_adapter], ["P1", "P2"], pricing_engine
-        )
+        priced, errors, summary = await run([mock_adapter], ["P1", "P2"], pricing_engine)
 
     assert summary.parts_total == 2
     assert summary.run_id is not None and len(summary.run_id) == 8

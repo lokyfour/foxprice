@@ -1,11 +1,9 @@
-import pytest
 import os
-import sys
-from pathlib import Path
-from decimal import Decimal
-from unittest.mock import patch, MagicMock, AsyncMock
+from unittest.mock import patch
 
-from main import load_parts, load_tiers_from_csv, scaffold_adapter, main
+import pytest
+
+from main import load_parts, load_tiers_from_csv, main, scaffold_adapter
 
 
 @pytest.fixture(autouse=True)

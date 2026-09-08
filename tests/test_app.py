@@ -1,12 +1,12 @@
-import pytest
-from unittest.mock import patch, AsyncMock, MagicMock
 from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from fastapi.testclient import TestClient
 from jose import jwt
 
-from foxprice.web.app import app
 from foxprice.settings import settings
+from foxprice.web.app import app
 
 ALGORITHM = "HS256"
 

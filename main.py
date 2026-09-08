@@ -158,9 +158,7 @@ def main() -> None:
     run_parser.add_argument("--parallel", action="store_true")
     run_parser.add_argument("--dry-run", action="store_true")
 
-    new_adapter_parser = subparsers.add_parser(
-        "new-adapter", help="Scaffold a new adapter file"
-    )
+    new_adapter_parser = subparsers.add_parser("new-adapter", help="Scaffold a new adapter file")
     new_adapter_parser.add_argument("name", type=str)
 
     # No subcommand given defaults to "run" so `foxprice --input x.txt`
