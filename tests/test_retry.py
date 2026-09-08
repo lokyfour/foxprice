@@ -68,6 +68,10 @@ async def test_get_breaker_different_suppliers():
 @patch("foxprice.core.retry._breakers", {})
 async def test_circuit_breaker_opens_after_failures():
     breaker = get_breaker("test_open_supplier")
-    with patch.object(breaker, "call_async", AsyncMock(side_effect=CircuitBreakerError("open"))):
+    with patch.object(
+        breaker,
+        "call_async",
+        AsyncMock(side_effect=CircuitBreakerError("open", __import__("datetime").datetime.now())),
+    ):
         with pytest.raises(CircuitBreakerError):
             await breaker.call_async(AsyncMock())

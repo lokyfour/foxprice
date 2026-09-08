@@ -16,6 +16,7 @@ fully closing again.
 """
 
 import asyncio
+import datetime
 import logging
 from typing import Any, Callable, Coroutine
 
@@ -35,7 +36,9 @@ _breakers: dict[str, CircuitBreaker] = {}
 
 def get_breaker(supplier: str) -> CircuitBreaker:
     if supplier not in _breakers:
-        _breakers[supplier] = CircuitBreaker(fail_max=5, reset_timeout=60)
+        _breakers[supplier] = CircuitBreaker(
+            fail_max=5, timeout_duration=datetime.timedelta(seconds=60)
+        )
     return _breakers[supplier]
 
 
