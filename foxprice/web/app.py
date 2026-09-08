@@ -53,7 +53,7 @@ def create_access_token(username: str) -> str:
         "exp": datetime.utcnow() + timedelta(seconds=settings.web_access_token_ttl),
         "type": "access",
     }
-    return jwt.encode(payload, settings.web_secret_key, algorithm=ALGORITHM)
+    return str(jwt.encode(payload, settings.web_secret_key, algorithm=ALGORITHM))
 
 
 def create_refresh_token(username: str) -> str:
@@ -62,7 +62,7 @@ def create_refresh_token(username: str) -> str:
         "exp": datetime.utcnow() + timedelta(seconds=settings.web_refresh_token_ttl),
         "type": "refresh",
     }
-    return jwt.encode(payload, settings.web_secret_key, algorithm=ALGORITHM)
+    return str(jwt.encode(payload, settings.web_secret_key, algorithm=ALGORITHM))
 
 
 async def get_current_user(request: Request) -> str:
@@ -84,7 +84,7 @@ async def get_current_user(request: Request) -> str:
             status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid or expired token"
         )
 
-    return payload["sub"]
+    return str(payload["sub"])
 
 
 @app.exception_handler(HTTPException)
@@ -107,6 +107,8 @@ async def login(request: Request):
     form = await request.form()
     username = form.get("username", "")
     password = form.get("password", "")
+    assert isinstance(username, str)
+    assert isinstance(password, str)
 
     async with aiosqlite.connect(DB_PATH) as db:
         async with db.execute(
@@ -224,12 +226,21 @@ async def tiers_page(request: Request, user: str = Depends(get_current_user)):
 @app.post("/tiers")
 async def tiers_upsert(request: Request, user: str = Depends(get_current_user)):
     form = await request.form()
+    price_from = form.get("price_from")
+    price_to = form.get("price_to")
+    markup_pct = form.get("markup_pct")
+    min_order_qty = form.get("min_order_qty", "1")
     tier_id = form.get("tier_id")
+    assert isinstance(price_from, str)
+    assert isinstance(price_to, str)
+    assert isinstance(markup_pct, str)
+    assert isinstance(min_order_qty, str)
+    assert isinstance(tier_id, str)
     await upsert_tier(
-        price_from=form.get("price_from"),
-        price_to=form.get("price_to"),
-        markup_pct=form.get("markup_pct"),
-        min_order_qty=int(form.get("min_order_qty", 1)),
+        price_from=price_from,
+        price_to=price_to,
+        markup_pct=markup_pct,
+        min_order_qty=int(min_order_qty),
         tier_id=int(tier_id) if tier_id else None,
     )
     return RedirectResponse(url="/tiers", status_code=status.HTTP_303_SEE_OTHER)

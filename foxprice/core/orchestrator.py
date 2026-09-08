@@ -46,6 +46,7 @@ async def _run_adapter(
                 part = part_queue.get_nowait()
             except asyncio.QueueEmpty:
                 break
+            assert part is not None
 
             offers: list = []
             errors: list[ErrorResult] = []

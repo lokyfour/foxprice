@@ -5,6 +5,7 @@ read/write concurrently without locking the whole database.
 """
 
 from pathlib import Path
+from typing import Any
 
 import aiosqlite
 import bcrypt
@@ -72,6 +73,7 @@ async def init_db() -> None:
 
         async with db.execute("SELECT COUNT(*) FROM users") as cursor:
             row = await cursor.fetchone()
+            assert row is not None
             user_count = row[0]
 
         if user_count == 0:
@@ -86,12 +88,13 @@ async def init_db() -> None:
     logger.info(f"database initialised: {DB_PATH}")
 
 
-async def get_tiers() -> list[tuple]:
+async def get_tiers() -> list[Any]:
     async with aiosqlite.connect(DB_PATH) as db:
         async with db.execute(
             "SELECT * FROM pricing_tiers ORDER BY CAST(price_from AS REAL)"
         ) as cursor:
-            return await cursor.fetchall()
+            rows = await cursor.fetchall()
+            return list(rows)
 
 
 async def upsert_tier(
@@ -128,12 +131,13 @@ async def delete_tier(tier_id: int) -> None:
         await db.commit()
 
 
-async def get_runs(limit: int = 50) -> list[tuple]:
+async def get_runs(limit: int = 50) -> list[Any]:
     async with aiosqlite.connect(DB_PATH) as db:
         async with db.execute(
             "SELECT * FROM runs ORDER BY created_at DESC LIMIT ?", (limit,)
         ) as cursor:
-            return await cursor.fetchall()
+            rows = await cursor.fetchall()
+            return list(rows)
 
 
 async def insert_run(run_id: str, parts_total: int, suppliers: list[str]) -> None:

@@ -16,6 +16,7 @@ fully closing again.
 """
 
 import asyncio
+import logging
 from typing import Any, Callable, Coroutine
 
 from aiobreaker import CircuitBreaker, CircuitBreakerError
@@ -42,7 +43,7 @@ def get_breaker(supplier: str) -> CircuitBreaker:
     stop=stop_after_attempt(4),
     wait=wait_exponential_jitter(initial=1, max=30),
     retry=retry_if_exception_type((PWTimeoutError, asyncio.TimeoutError)),
-    before_sleep=before_sleep_log(logger, "WARNING"),
+    before_sleep=before_sleep_log(logger, logging.WARNING),
     reraise=True,
 )
 async def with_retry(fn: Callable[..., Coroutine[Any, Any, Any]], *args: Any, **kwargs: Any) -> Any:
