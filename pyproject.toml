@@ -46,3 +46,6 @@ ignore = ["E501"]
 [tool.mypy]
 strict = true
 python_version = "3.11"
+
+[tool.ruff.format]
+exclude = ["docs/**"]
