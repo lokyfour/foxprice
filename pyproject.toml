@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "foxprice"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "playwright>=1.55.1",
+    "pydantic-settings>=2.0",
+    "loguru>=0.7",
+    "tenacity>=8.2",
+    "aiobreaker>=1.2",
+    "openpyxl>=3.1",
+    "fastapi>=0.111",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+    "aiosqlite>=0.20",
+    "bcrypt>=4.1",
+    "python-jose[cryptography]>=3.3",
+    "python-dotenv>=1.0",
+    "uvicorn[standard]>=0.29",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "mypy>=1.10",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+foxprice = "foxprice.main:main"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"

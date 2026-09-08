@@ -1,0 +1,40 @@
+name: Security scan
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"  # every Monday 09:00 UTC
+  workflow_dispatch:       # allow manual trigger
+
+jobs:
+  audit:
+    name: Dependency & static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install project + audit tools
+        run: |
+          pip install -e ".[dev]"
+          pip install pip-audit bandit
+
+      - name: pip-audit (known CVEs)
+        run: pip-audit --desc on
+
+      - name: bandit (static analysis)
+        run: bandit -r core adapters web -ll -x tests
+
+      - name: Check Playwright version pin
+        run: |
+          python - <<'EOF'
+          from importlib.metadata import version
+          from packaging.version import Version
+          MIN = Version("1.55.1")
+          installed = Version(version("playwright"))
+          assert installed >= MIN, f"Playwright {installed} < required {MIN} (CVE-2025-59288)"
+          print(f"OK: playwright=={installed}")
+          EOF

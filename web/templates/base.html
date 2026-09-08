@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Foxprice{% endblock %}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #eee;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      margin: 0;
+      padding: 0;
+    }
+    a { color: #7fdbff; }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: #16213e;
+      border-bottom: 1px solid #333;
+    }
+    nav a { text-decoration: none; font-weight: bold; }
+    nav form { margin-left: auto; }
+    main { padding: 1.5rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid #333; }
+    th { color: #7fdbff; }
+    input, select, button {
+      font-family: inherit;
+      background: #0f0f1e;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 0.4rem 0.6rem;
+      border-radius: 3px;
+    }
+    button { cursor: pointer; }
+    button:hover { border-color: #7fdbff; }
+    .error { color: #ff6b6b; }
+    /* Used by colorizeLog() in /static/app.js */
+    .log-error { color: #ff6b6b; }
+    .log-warn  { color: #ffd700; }
+    .log-info  { color: #7fdbff; }
+    pre#log {
+      background: #0f0f1e;
+      border: 1px solid #333;
+      padding: 1rem;
+      height: 60vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/tiers">Tiers</a>
+    <form method="post" action="/logout">
+      <button type="submit">Logout</button>
+    </form>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

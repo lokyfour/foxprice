@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Foxprice — Run {{ run_id }}{% endblock %}
+
+{% block content %}
+  <h1>Run {{ run_id }}</h1>
+  <button id="stop-run-btn" type="button">Stop</button>
+  <span id="conn-status"></span>
+
+  <pre id="log"></pre>
+
+  <script>
+    const runId = {{ run_id | tojson }};
+    const logEl = document.getElementById("log");
+    const statusEl = document.getElementById("conn-status");
+
+    document.getElementById("stop-run-btn").addEventListener("click", async () => {
+      await fetch(`/runs/${runId}/stop`, { method: "POST" });
+    });
+
+    const source = new EventSource(`/runs/${runId}/stream`);
+    source.onopen = () => {
+      statusEl.textContent = "";
+    };
+    source.onmessage = (event) => {
+      logEl.innerHTML += window.colorizeLog(event.data) + "\n";
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+    source.onerror = () => {
+      // Leave the connection open so the browser's built-in EventSource
+      // retry logic can reconnect on its own; just surface that we're
+      // not currently receiving events.
+      statusEl.textContent = " [connection lost — retrying...]";
+      statusEl.style.color = "#ff6b6b";
+    };
+  </script>
+{% endblock %}

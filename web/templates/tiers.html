@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Foxprice — Pricing Tiers{% endblock %}
+
+{% block content %}
+  <h1>Pricing Tiers</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Price From</th>
+        <th>Price To</th>
+        <th>Markup %</th>
+        <th>Min Order Qty</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tier in tiers %}
+        <tr>
+          <td>{{ tier[0] }}</td>
+          <td>{{ tier[1] }}</td>
+          <td>{{ tier[2] }}</td>
+          <td>{{ tier[3] }}</td>
+          <td>{{ tier[4] }}</td>
+          <td>
+            <button type="button" class="edit-tier-btn"
+              data-id="{{ tier[0] }}"
+              data-price-from="{{ tier[1] }}"
+              data-price-to="{{ tier[2] }}"
+              data-markup-pct="{{ tier[3] }}"
+              data-min-order-qty="{{ tier[4] }}">Edit</button>
+            <form method="post" action="/tiers/{{ tier[0] }}/delete" style="display:inline">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6">No tiers configured.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 id="tier-form-heading">Add Tier</h2>
+  <form method="post" action="/tiers" id="tier-form">
+    <input type="hidden" name="tier_id" id="tier_id" value="">
+    <p>
+      <label for="price_from">Price From</label><br>
+      <input type="text" id="price_from" name="price_from" required>
+    </p>
+    <p>
+      <label for="price_to">Price To</label><br>
+      <input type="text" id="price_to" name="price_to" required>
+    </p>
+    <p>
+      <label for="markup_pct">Markup %</label><br>
+      <input type="text" id="markup_pct" name="markup_pct" required>
+    </p>
+    <p>
+      <label for="min_order_qty">Min Order Qty</label><br>
+      <input type="number" id="min_order_qty" name="min_order_qty" value="1" min="1" required>
+    </p>
+    <button type="submit">Save Tier</button>
+    <button type="button" id="cancel-edit-btn" style="display:none">Cancel</button>
+  </form>
+
+  <script>
+    const form = document.getElementById("tier-form");
+    const heading = document.getElementById("tier-form-heading");
+    const cancelBtn = document.getElementById("cancel-edit-btn");
+
+    document.querySelectorAll(".edit-tier-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.getElementById("tier_id").value = btn.dataset.id;
+        document.getElementById("price_from").value = btn.dataset.priceFrom;
+        document.getElementById("price_to").value = btn.dataset.priceTo;
+        document.getElementById("markup_pct").value = btn.dataset.markupPct;
+        document.getElementById("min_order_qty").value = btn.dataset.minOrderQty;
+        heading.textContent = "Edit Tier #" + btn.dataset.id;
+        cancelBtn.style.display = "inline";
+      });
+    });
+
+    cancelBtn.addEventListener("click", () => {
+      form.reset();
+      document.getElementById("tier_id").value = "";
+      heading.textContent = "Add Tier";
+      cancelBtn.style.display = "none";
+    });
+  </script>
+{% endblock %}

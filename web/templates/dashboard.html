@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Foxprice — Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+  <button id="start-run-btn" type="button">Start Run</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Run ID</th>
+        <th>Status</th>
+        <th>Parts Total</th>
+        <th>Parts Found</th>
+        <th>Errors</th>
+        <th>Created At</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in runs %}
+        <tr>
+          <td><a href="/runs/{{ row[1] }}">{{ row[1] }}</a></td>
+          <td>{{ row[2] }}</td>
+          <td>{{ row[3] }}</td>
+          <td>{{ row[4] }}</td>
+          <td>{{ row[5] }}</td>
+          <td>{{ row[8] }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6">No runs yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <script>
+    document.getElementById("start-run-btn").addEventListener("click", async () => {
+      const res = await fetch("/runs/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ skip: [], parallel: false }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        window.location.href = "/runs/" + data.run_id;
+      } else {
+        alert("Failed to start run");
+      }
+    });
+  </script>
+{% endblock %}
