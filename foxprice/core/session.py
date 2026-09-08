@@ -12,7 +12,7 @@ from pathlib import Path
 from loguru import logger
 from playwright.async_api import BrowserContext
 
-from core.base_adapter import BaseAdapter
+from foxprice.core.base_adapter import BaseAdapter
 
 SESSION_DIR = Path(".sessions")
 

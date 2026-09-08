@@ -3,8 +3,8 @@ import json
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from core.session import SessionManager, SESSION_DIR
-from core.base_adapter import BaseAdapter
+from foxprice.core.session import SessionManager, SESSION_DIR
+from foxprice.core.base_adapter import BaseAdapter
 
 pytestmark = pytest.mark.asyncio
 
@@ -18,7 +18,7 @@ def _mock_adapter():
 @pytest.fixture
 def session_dir(tmp_path) -> Path:
     path = tmp_path / ".sessions"
-    with patch("core.session.SESSION_DIR", path):
+    with patch("foxprice.core.session.SESSION_DIR", path):
         yield path
 
 

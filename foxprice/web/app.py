@@ -23,10 +23,10 @@ from fastapi.templating import Jinja2Templates
 from jose import JWTError, jwt
 from loguru import logger
 
-from settings import settings
-from web.db import DB_PATH, delete_tier, get_runs, get_tiers, init_db, upsert_tier
-from web.runner import ALLOWED_SUPPLIERS, launch_run, stop_run
-from web.sse import get_bus
+from foxprice.settings import settings
+from foxprice.web.db import DB_PATH, delete_tier, get_runs, get_tiers, init_db, upsert_tier
+from foxprice.web.runner import ALLOWED_SUPPLIERS, launch_run, stop_run
+from foxprice.web.sse import get_bus
 
 TEMPLATES = Jinja2Templates(directory=str(Path(__file__).parent / "templates"))
 ALGORITHM = "HS256"

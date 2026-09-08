@@ -32,8 +32,8 @@ dev = [
     "ruff>=0.4",
 ]
 
-[project.scripts]
-foxprice = "foxprice.main:main"
+[tool.hatch.build.targets.wheel]
+packages = ["foxprice"]
 
 [tool.ruff]
 line-length = 100

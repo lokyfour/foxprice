@@ -104,35 +104,39 @@ python -m foxprice --adapter demo_auth
 ## Project layout
 
 ```
-foxprice/
+.
+├── foxprice/
+│   ├── __init__.py
+│   ├── settings.py          # pydantic-settings, loaded from .env
+│   │
+│   ├── core/
+│   │   ├── base_adapter.py  # Abstract base — implement login() + fetch_offers()
+│   │   ├── orchestrator.py  # TaskGroup + Queue + bounded context pool
+│   │   ├── session.py       # storageState persistence, expiry detection, re-auth
+│   │   ├── retry.py         # tenacity policy + aiobreaker circuit breaker
+│   │   ├── pricing.py       # Tier lookup, Decimal math, ROUND_HALF_UP
+│   │   ├── reporter.py      # openpyxl Excel output (4 sheets)
+│   │   └── models.py        # PriceOffer, PricedResult, ErrorResult, RunSummary
+│   │
+│   ├── adapters/
+│   │   ├── demo_static.py   # Demo: static HTML (books.toscrape.com)
+│   │   └── demo_auth.py     # Demo: form login + session
+│   │
+│   └── web/                 # Optional FastAPI control panel
+│       ├── app.py           # Routes, JWT auth, lifespan
+│       ├── db.py            # aiosqlite: users, runs, tiers, parts
+│       ├── runner.py        # Subprocess launcher, SSE bus
+│       ├── sse.py           # Server-Sent Events per run
+│       └── templates/       # Jinja2: dashboard, run detail, tiers, users
 │
-├── core/
-│   ├── base_adapter.py     # Abstract base — implement login() + fetch_offers()
-│   ├── orchestrator.py     # TaskGroup + Queue + bounded context pool
-│   ├── session.py          # storageState persistence, expiry detection, re-auth
-│   ├── retry.py            # tenacity policy + aiobreaker circuit breaker
-│   ├── pricing.py          # Tier lookup, Decimal math, ROUND_HALF_UP
-│   ├── reporter.py         # openpyxl Excel output (4 sheets)
-│   └── models.py           # PriceOffer, PricedResult, ErrorResult, RunSummary
-│
-├── adapters/
-│   ├── demo_static.py      # Demo: static HTML (books.toscrape.com)
-│   └── demo_auth.py        # Demo: form login + session
-│
-├── web/                    # Optional FastAPI control panel
-│   ├── app.py              # Routes, JWT auth, lifespan
-│   ├── db.py               # aiosqlite: users, runs, tiers, parts
-│   ├── runner.py           # Subprocess launcher, SSE bus
-│   ├── sse.py              # Server-Sent Events per run
-│   └── templates/          # Jinja2: dashboard, run detail, tiers, users
-│
-├── tests/                  # pytest — see Running tests
+├── tests/                   # pytest — see Running tests
 ├── docs/
-│   ├── architecture.md     # Detailed internals
-│   └── adapter-guide.md    # Step-by-step adapter authoring
+│   ├── architecture.md      # Detailed internals
+│   └── adapter-guide.md     # Step-by-step adapter authoring
 │
-├── pricing_tiers.csv       # Initial import only — DB is source of truth after first run
-├── parts.txt               # Default parts list (one SKU per line)
+├── main.py                  # CLI entry point
+├── pricing_tiers.csv        # Initial import only — DB is source of truth after first run
+├── parts.txt                # Default parts list (one SKU per line)
 ├── .env.example
 └── pyproject.toml
 ```
@@ -145,15 +149,15 @@ Generate a scaffold:
 
 ```bash
 python -m foxprice new-adapter my_supplier
-# → adapters/my_supplier.py
+# → foxprice/adapters/my_supplier.py
 ```
 
 Minimum implementation — two methods:
 
 ```python
 from playwright.async_api import BrowserContext
-from core.base_adapter import BaseAdapter
-from core.models import PriceOffer, ErrorResult
+from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.models import PriceOffer, ErrorResult
 from decimal import Decimal
 
 class MySupplierAdapter(BaseAdapter):
@@ -196,7 +200,7 @@ class MySupplierAdapter(BaseAdapter):
 Register in `main.py`:
 
 ```python
-from adapters.my_supplier import MySupplierAdapter
+from foxprice.adapters.my_supplier import MySupplierAdapter
 ADAPTERS = [MySupplierAdapter()]
 ```
 
@@ -226,7 +230,7 @@ Tiers are editable live via the web panel without restarting anything.
 ## Web panel (optional)
 
 ```bash
-uvicorn web.app:app --port 8080
+uvicorn foxprice.web.app:app --port 8080
 # → http://localhost:8080
 # Default credentials: admin / admin  ← change immediately
 ```
@@ -263,7 +267,7 @@ Full reference: [.env.example](.env.example)
 pytest tests/ -v
 
 # With coverage
-pytest tests/ --cov=core --cov=adapters --cov-fail-under=80
+pytest tests/ --cov=foxprice --cov-fail-under=80
 
 # Single module
 pytest tests/test_pricing.py -v

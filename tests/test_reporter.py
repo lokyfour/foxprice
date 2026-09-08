@@ -5,8 +5,8 @@ from datetime import datetime
 
 import openpyxl
 
-from core.reporter import Reporter
-from core.models import PriceOffer, PricedResult, ErrorResult, RunSummary
+from foxprice.core.reporter import Reporter
+from foxprice.core.models import PriceOffer, PricedResult, ErrorResult, RunSummary
 
 
 @pytest.fixture

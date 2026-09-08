@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, patch
 from aiobreaker import CircuitBreakerError
 from playwright._impl._errors import TimeoutError as PWTimeout
 
-from core.retry import get_breaker, with_retry
+from foxprice.core.retry import get_breaker, with_retry
 
 pytestmark = pytest.mark.asyncio
 
@@ -55,19 +55,19 @@ async def test_with_retry_does_not_retry_value_error():
     assert mock.call_count == 1
 
 
-@patch("core.retry._breakers", {})
+@patch("foxprice.core.retry._breakers", {})
 async def test_get_breaker_returns_same_instance():
     b1 = get_breaker("sup_a")
     b2 = get_breaker("sup_a")
     assert b1 is b2
 
 
-@patch("core.retry._breakers", {})
+@patch("foxprice.core.retry._breakers", {})
 async def test_get_breaker_different_suppliers():
     assert get_breaker("sup_a") is not get_breaker("sup_b")
 
 
-@patch("core.retry._breakers", {})
+@patch("foxprice.core.retry._breakers", {})
 async def test_circuit_breaker_opens_after_failures():
     breaker = get_breaker("test_open_supplier")
     with patch.object(

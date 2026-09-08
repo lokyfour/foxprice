@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 
 from playwright.async_api import BrowserContext
 
-from core.models import ErrorResult, PriceOffer
+from foxprice.core.models import ErrorResult, PriceOffer
 
 
 class BaseAdapter(ABC):

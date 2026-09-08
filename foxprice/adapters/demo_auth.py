@@ -1,10 +1,11 @@
-"""Demo adapter for books.toscrape.com — a public static HTML demo site.
+"""Demo adapter for webscraper.io/test-sites/e-commerce/allinone — a
+public site with no real authentication.
 
-books.toscrape.com has no search and no concept of part numbers, so
-this adapter does not implement real part_number matching. It simply
-returns the first 3 books on the homepage as demo offers, all flagged
-fuzzy_matched=True. Real adapters must implement actual matching
-against part_number.
+This adapter simulates the login -> session-check -> fetch lifecycle
+that a real authenticated supplier adapter would follow, without an
+actual credential flow. It exists so developers can exercise the full
+orchestrator path (login, is_session_expired, fetch_offers, session
+persistence) locally without needing a real supplier account.
 """
 
 from decimal import Decimal
@@ -13,44 +14,63 @@ from loguru import logger
 from playwright.async_api import BrowserContext
 from playwright.async_api import TimeoutError as PWTimeout
 
-from core.base_adapter import BaseAdapter
-from core.models import ErrorResult, PriceOffer
+from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.models import ErrorResult, PriceOffer
 
-BASE_URL = "http://books.toscrape.com"
-BOOK_CARDS = "article.product_pod"
-BOOK_TITLE = "h3 > a"
-BOOK_PRICE = "p.price_color"
+# from foxprice.settings import settings  # TODO
+
+BASE_URL = "https://webscraper.io/test-sites/e-commerce/allinone"
+PRODUCT_CARDS = "div.thumbnail"
+PRODUCT_TITLE = "a.title"
+PRODUCT_PRICE = "h4.price"
+SESSION_CHECK = "div.thumbnail"  # presence = site loaded = "session ok"
 
 
-class DemoStaticAdapter(BaseAdapter):
-    SUPPLIER_NAME = "demo_static"
-    ADAPTER_TIMEOUT_SEC = 120
+class DemoAuthAdapter(BaseAdapter):
+    SUPPLIER_NAME = "demo_auth"
+    ADAPTER_TIMEOUT_SEC = 180
 
     async def login(self, context: BrowserContext) -> None:
-        logger.debug("demo_static: no login required")
+        page = await context.new_page()
+        try:
+            await page.goto(BASE_URL, timeout=20000)
+            await page.wait_for_selector(SESSION_CHECK, timeout=10000)
+            logger.info("demo_auth: login OK (simulated — no real auth on this site)")
+        finally:
+            await page.close()
+
+    async def is_session_expired(self, context: BrowserContext) -> bool:
+        page = await context.new_page()
+        try:
+            await page.goto(BASE_URL, timeout=10000)
+            try:
+                await page.wait_for_selector(SESSION_CHECK, timeout=5000)
+                return False
+            except PWTimeout:
+                return True
+        finally:
+            await page.close()
 
     async def fetch_offers(
         self, context: BrowserContext, part_number: str
     ) -> tuple[list[PriceOffer], list[ErrorResult]]:
         page = await context.new_page()
         try:
-            await page.goto(BASE_URL, timeout=15000)
-            await page.wait_for_selector(BOOK_CARDS, timeout=10000)
+            await page.goto(BASE_URL, timeout=20000)
+            await page.wait_for_selector(PRODUCT_CARDS, timeout=10000)
 
-            cards = await page.query_selector_all(BOOK_CARDS)
+            cards = await page.query_selector_all(PRODUCT_CARDS)
             offers: list[PriceOffer] = []
 
             for card in cards[:3]:
-                title_el = await card.query_selector(BOOK_TITLE)
-                price_el = await card.query_selector(BOOK_PRICE)
+                title_el = await card.query_selector(PRODUCT_TITLE)
+                price_el = await card.query_selector(PRODUCT_PRICE)
                 if title_el is None or price_el is None:
                     continue
 
                 title = (await title_el.inner_text()).strip()
                 price_text = (await price_el.inner_text()).strip()
-                cleaned = (
-                    price_text.replace("Â£", "").replace("£", "").replace(",", "").strip()
-                )
+                cleaned = price_text.replace("$", "").replace(",", "").strip()
                 unit_price = Decimal(cleaned)
 
                 offers.append(
@@ -71,7 +91,7 @@ class DemoStaticAdapter(BaseAdapter):
                             supplier=self.SUPPLIER_NAME,
                             part_number=part_number,
                             error_type="not_found",
-                            description="no books found on demo_static homepage",
+                            description="no products found on demo_auth homepage",
                         )
                     ],
                 )

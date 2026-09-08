@@ -14,9 +14,9 @@ from pathlib import Path
 
 from loguru import logger
 
-from core.orchestrator import run as orchestrator_run
-from core.pricing import PricingEngine
-from core.reporter import Reporter
+from foxprice.core.orchestrator import run as orchestrator_run
+from foxprice.core.pricing import PricingEngine
+from foxprice.core.reporter import Reporter
 
 # Register your adapters here
 ADAPTERS: list = []
@@ -83,8 +83,8 @@ _ADAPTER_TEMPLATE = '''"""Adapter for {name}."""
 
 from playwright.async_api import BrowserContext
 
-from core.base_adapter import BaseAdapter
-from core.models import ErrorResult, PriceOffer
+from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.models import ErrorResult, PriceOffer
 
 
 class {class_name}(BaseAdapter):
@@ -103,7 +103,7 @@ class {class_name}(BaseAdapter):
 
 
 def scaffold_adapter(name: str) -> None:
-    path = Path("adapters") / f"{name}.py"
+    path = Path("foxprice") / "adapters" / f"{name}.py"
     if path.exists():
         logger.error(f"adapter already exists: {path}")
         sys.exit(1)
@@ -111,7 +111,7 @@ def scaffold_adapter(name: str) -> None:
     class_name = name.title().replace("-", "").replace("_", "") + "Adapter"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(_ADAPTER_TEMPLATE.format(name=name, class_name=class_name))
-    logger.info(f"scaffold created: adapters/{name}.py")
+    logger.info(f"scaffold created: {path}")
 
 
 async def _run_command(args: argparse.Namespace) -> None:

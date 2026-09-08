@@ -3,10 +3,10 @@ import asyncio
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from core.orchestrator import run
-from core.models import PriceOffer, ErrorResult, PricedResult, RunSummary
-from core.pricing import PricingEngine, PricingTier
-from core.base_adapter import BaseAdapter
+from foxprice.core.orchestrator import run
+from foxprice.core.models import PriceOffer, ErrorResult, PricedResult, RunSummary
+from foxprice.core.pricing import PricingEngine, PricingTier
+from foxprice.core.base_adapter import BaseAdapter
 
 pytestmark = pytest.mark.asyncio
 
@@ -72,8 +72,8 @@ def _mock_playwright_env():
 async def test_run_returns_correct_types(mock_adapter, pricing_engine, tmp_path):
     mock_pw, _ = _mock_playwright_env()
     with (
-        patch("core.orchestrator.async_playwright", mock_pw),
-        patch("core.orchestrator.SESSION_DIR", tmp_path / ".sessions"),
+        patch("foxprice.core.orchestrator.async_playwright", mock_pw),
+        patch("foxprice.core.orchestrator.SESSION_DIR", tmp_path / ".sessions"),
     ):
         priced, errors, summary = await run(
             [mock_adapter], ["PART-001"], pricing_engine
@@ -101,8 +101,8 @@ def test_run_skip_allowlist():
 async def test_run_summary_fields(mock_adapter, pricing_engine, tmp_path):
     mock_pw, _ = _mock_playwright_env()
     with (
-        patch("core.orchestrator.async_playwright", mock_pw),
-        patch("core.orchestrator.SESSION_DIR", tmp_path / ".sessions"),
+        patch("foxprice.core.orchestrator.async_playwright", mock_pw),
+        patch("foxprice.core.orchestrator.SESSION_DIR", tmp_path / ".sessions"),
     ):
         priced, errors, summary = await run(
             [mock_adapter], ["P1", "P2"], pricing_engine

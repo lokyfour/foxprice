@@ -5,9 +5,9 @@
 An adapter is a small Playwright-driven class, one per supplier, that
 knows how to log into that supplier's site (if needed) and look up
 prices for a part number. Every adapter subclasses `BaseAdapter`
-(`core/base_adapter.py`) and implements its Template Method contract —
+(`foxprice/core/base_adapter.py`) and implements its Template Method contract —
 `login`, `fetch_offers`, and optionally `logout` and
-`is_session_expired`. The orchestrator (`core/orchestrator.py`) drives
+`is_session_expired`. The orchestrator (`foxprice/core/orchestrator.py`) drives
 every adapter through the same lifecycle (login → fetch_offers loop →
 logout) regardless of supplier, using `asyncio.TaskGroup`,
 per-supplier circuit breakers, and retry with backoff. Adapters focus
@@ -21,7 +21,7 @@ outside the adapter.
 python main.py new-adapter my_supplier
 ```
 
-This scaffolds `adapters/my_supplier.py` with a `MySupplierAdapter`
+This scaffolds `foxprice/adapters/my_supplier.py` with a `MySupplierAdapter`
 class that already subclasses `BaseAdapter`, sets
 `SUPPLIER_NAME = "my_supplier"`, and stubs `login` and `fetch_offers`
 with `raise NotImplementedError` and a `# TODO` comment. Fill those
@@ -34,7 +34,7 @@ in, then register the class in `ADAPTERS` in `main.py`.
 Called once per run, before any `fetch_offers` calls, on a fresh
 `BrowserContext`. For sites with no real authentication, this can
 just navigate to the homepage and confirm it loaded (see
-`adapters/demo_auth.py`). For sites with real login, submit
+`foxprice/adapters/demo_auth.py`). For sites with real login, submit
 credentials and wait for a selector that only appears when
 authenticated. After `login` returns, the orchestrator calls
 `context.storage_state()` and persists it via `SessionManager` — you
@@ -71,7 +71,7 @@ same part once before moving on.
 ## Class attributes
 
 - `SUPPLIER_NAME` — must be unique across all adapters. It's used as
-  the dict key for circuit breakers (`core/retry.py`), the session
+  the dict key for circuit breakers (`foxprice/core/retry.py`), the session
   filename (`.sessions/{SUPPLIER_NAME}.json`), and the supplier column
   in reports. Two adapters sharing a name will silently share session
   state and circuit breaker.
@@ -94,7 +94,7 @@ rounding error that string construction avoids entirely.
 
 ## Error handling
 
-`ErrorType` (`core/models.py`) is a fixed set of literals:
+`ErrorType` (`foxprice/core/models.py`) is a fixed set of literals:
 
 | Value              | When to use it                                                   |
 |---------------------|-------------------------------------------------------------------|
@@ -109,7 +109,7 @@ rounding error that string construction avoids entirely.
 `fetch_offers` must catch every exception it can raise internally
 (Playwright timeouts, selector misses, `Decimal` parse failures) and
 return an `ErrorResult` with the right `error_type` instead of letting
-it propagate. See `adapters/demo_static.py` for the standard
+it propagate. See `foxprice/adapters/demo_static.py` for the standard
 try/except shape: catch `PWTimeout` for `timeout`, catch broad
 `Exception` for `parse_error`.
 
@@ -161,8 +161,8 @@ This is the same template `new-adapter` generates:
 
 from playwright.async_api import BrowserContext
 
-from core.base_adapter import BaseAdapter
-from core.models import ErrorResult, PriceOffer
+from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.models import ErrorResult, PriceOffer
 
 
 class MySupplierAdapter(BaseAdapter):

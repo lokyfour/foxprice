@@ -2,8 +2,8 @@ import pytest
 import asyncio
 from unittest.mock import patch, AsyncMock, MagicMock
 
-from web.runner import launch_run, stop_run, ALLOWED_SUPPLIERS
-from web.sse import _buses
+from foxprice.web.runner import launch_run, stop_run, ALLOWED_SUPPLIERS
+from foxprice.web.sse import _buses
 
 pytestmark = pytest.mark.asyncio
 
@@ -11,7 +11,7 @@ pytestmark = pytest.mark.asyncio
 @pytest.fixture
 def clean_state():
     _buses.clear()
-    with patch("web.runner.ALLOWED_SUPPLIERS", {"sup_a", "sup_b"}):
+    with patch("foxprice.web.runner.ALLOWED_SUPPLIERS", {"sup_a", "sup_b"}):
         yield
     _buses.clear()
 
@@ -30,9 +30,9 @@ async def test_launch_run_creates_sse_bus(clean_state):
     mock_proc.stdout.__anext__ = AsyncMock(side_effect=StopAsyncIteration)
 
     with (
-        patch("web.runner.insert_run", AsyncMock()),
-        patch("web.runner.update_run", AsyncMock()),
-        patch("web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)),
+        patch("foxprice.web.runner.insert_run", AsyncMock()),
+        patch("foxprice.web.runner.update_run", AsyncMock()),
+        patch("foxprice.web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)),
     ):
         await launch_run("r002", 5, ["sup_a"], skip=[])
 
@@ -53,11 +53,11 @@ async def test_launch_run_publishes_stdout_lines(clean_state):
     )
 
     with (
-        patch("web.runner.create_bus", return_value=mock_bus),
-        patch("web.runner.remove_bus"),
-        patch("web.runner.insert_run", AsyncMock()),
-        patch("web.runner.update_run", AsyncMock()),
-        patch("web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)),
+        patch("foxprice.web.runner.create_bus", return_value=mock_bus),
+        patch("foxprice.web.runner.remove_bus"),
+        patch("foxprice.web.runner.insert_run", AsyncMock()),
+        patch("foxprice.web.runner.update_run", AsyncMock()),
+        patch("foxprice.web.runner.asyncio.create_subprocess_exec", AsyncMock(return_value=mock_proc)),
     ):
         await launch_run("r003", 2, ["sup_a"], skip=[])
 
@@ -70,11 +70,11 @@ async def test_stop_run_returns_false_for_missing_run(clean_state):
 
 
 async def test_stop_run_returns_true_and_closes_bus(clean_state):
-    from web.sse import create_bus
+    from foxprice.web.sse import create_bus
 
     create_bus("r_stop")
 
-    with patch("web.runner.update_run", AsyncMock()):
+    with patch("foxprice.web.runner.update_run", AsyncMock()):
         result = await stop_run("r_stop")
 
     assert result is True

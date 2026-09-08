@@ -12,7 +12,7 @@ from loguru import logger
 from openpyxl.styles import Font, PatternFill
 from openpyxl.worksheet.worksheet import Worksheet
 
-from core.models import ErrorResult, PricedResult, RunSummary
+from foxprice.core.models import ErrorResult, PricedResult, RunSummary
 
 HEADER_FILL = PatternFill("solid", fgColor="1F4E79")
 HEADER_FONT = Font(color="FFFFFF", bold=True)

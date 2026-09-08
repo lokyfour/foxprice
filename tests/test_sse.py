@@ -1,7 +1,7 @@
 import pytest
 import asyncio
 
-from web.sse import SseBus, create_bus, get_bus, remove_bus, _buses
+from foxprice.web.sse import SseBus, create_bus, get_bus, remove_bus, _buses
 
 pytestmark = pytest.mark.asyncio
 

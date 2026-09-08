@@ -64,13 +64,13 @@ def test_load_tiers_file_not_found():
 def test_scaffold_creates_file(tmp_path):
     os.chdir(tmp_path)
     scaffold_adapter("test_sup")
-    assert (tmp_path / "adapters" / "test_sup.py").exists()
+    assert (tmp_path / "foxprice" / "adapters" / "test_sup.py").exists()
 
 
 def test_scaffold_file_contains_class(tmp_path):
     os.chdir(tmp_path)
     scaffold_adapter("my_sup")
-    content = (tmp_path / "adapters" / "my_sup.py").read_text()
+    content = (tmp_path / "foxprice" / "adapters" / "my_sup.py").read_text()
     assert "class MySupAdapter" in content
     assert "SUPPLIER_NAME" in content
 
@@ -89,7 +89,7 @@ def test_main_new_adapter_command(tmp_path):
     os.chdir(tmp_path)
     with patch("sys.argv", ["foxprice", "new-adapter", "cli_sup"]):
         main()
-    assert (tmp_path / "adapters" / "cli_sup.py").exists()
+    assert (tmp_path / "foxprice" / "adapters" / "cli_sup.py").exists()
 
 
 def test_main_run_dry_run(tmp_path):

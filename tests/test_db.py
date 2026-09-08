@@ -5,7 +5,7 @@ import aiosqlite
 from pathlib import Path
 from unittest.mock import patch
 
-from web.db import (
+from foxprice.web.db import (
     init_db,
     get_tiers,
     upsert_tier,
@@ -21,7 +21,7 @@ pytestmark = pytest.mark.asyncio
 @pytest_asyncio.fixture
 async def db_path(tmp_path) -> Path:
     path = tmp_path / "test.db"
-    with patch("web.db.DB_PATH", path):
+    with patch("foxprice.web.db.DB_PATH", path):
         await init_db()
         yield path
 

@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from fastapi.testclient import TestClient
 from jose import jwt
 
-from web.app import app
-from settings import settings
+from foxprice.web.app import app
+from foxprice.settings import settings
 
 ALGORITHM = "HS256"
 
@@ -46,7 +46,7 @@ def _mock_db_row(row):
 
 @pytest.fixture
 def client():
-    with patch("web.app.init_db", AsyncMock()):
+    with patch("foxprice.web.app.init_db", AsyncMock()):
         with TestClient(app) as c:
             yield c
 
@@ -58,7 +58,7 @@ def test_login_page_returns_200(client):
 
 
 def test_login_post_invalid_credentials(client):
-    with patch("web.app.aiosqlite.connect", _mock_db_row(None)):
+    with patch("foxprice.web.app.aiosqlite.connect", _mock_db_row(None)):
         resp = client.post(
             "/login",
             data={"username": "bad", "password": "bad"},
@@ -75,7 +75,7 @@ def test_dashboard_requires_auth(client):
 
 
 def test_dashboard_with_auth(client):
-    with patch("web.app.get_runs", AsyncMock(return_value=[])):
+    with patch("foxprice.web.app.get_runs", AsyncMock(return_value=[])):
         resp = client.get("/", cookies=auth_cookies(client))
     assert resp.status_code == 200
 
@@ -86,7 +86,7 @@ def test_tiers_requires_auth(client):
 
 
 def test_tiers_with_auth(client):
-    with patch("web.app.get_tiers", AsyncMock(return_value=[])):
+    with patch("foxprice.web.app.get_tiers", AsyncMock(return_value=[])):
         resp = client.get("/tiers", cookies=auth_cookies(client))
     assert resp.status_code == 200
 
@@ -105,8 +105,8 @@ def test_logout_clears_cookies(client):
 
 def test_start_run_with_auth(client):
     with (
-        patch("web.app.launch_run", AsyncMock()),
-        patch("web.app.asyncio.create_task", side_effect=lambda coro: coro.close()),
+        patch("foxprice.web.app.launch_run", AsyncMock()),
+        patch("foxprice.web.app.asyncio.create_task", side_effect=lambda coro: coro.close()),
     ):
         resp = client.post(
             "/runs/start",

@@ -1,7 +1,7 @@
 import pytest
 from decimal import Decimal
 from datetime import datetime
-from core.models import PriceOffer, PricedResult, ErrorResult, RunSummary, ErrorType
+from foxprice.core.models import PriceOffer, PricedResult, ErrorResult, RunSummary, ErrorType
 from typing import get_args
 
 

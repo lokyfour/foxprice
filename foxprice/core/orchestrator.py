@@ -15,11 +15,11 @@ from asyncio import TaskGroup
 from loguru import logger
 from playwright.async_api import Browser, async_playwright
 
-from core.base_adapter import BaseAdapter
-from core.models import ErrorResult, PricedResult, RunSummary
-from core.pricing import PricingEngine
-from core.retry import CircuitBreakerError, get_breaker, with_retry
-from core.session import SESSION_DIR, SessionManager
+from foxprice.core.base_adapter import BaseAdapter
+from foxprice.core.models import ErrorResult, PricedResult, RunSummary
+from foxprice.core.pricing import PricingEngine
+from foxprice.core.retry import CircuitBreakerError, get_breaker, with_retry
+from foxprice.core.session import SESSION_DIR, SessionManager
 
 
 async def _run_adapter(

@@ -1,7 +1,7 @@
 import pytest
 from decimal import Decimal, InvalidOperation
 
-from core.pricing import PricingEngine, PricingTier
+from foxprice.core.pricing import PricingEngine, PricingTier
 
 
 @pytest.fixture

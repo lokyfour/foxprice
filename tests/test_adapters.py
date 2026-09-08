@@ -5,9 +5,9 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 from playwright.async_api import TimeoutError as PWTimeout
 
-from adapters.demo_static import DemoStaticAdapter, BOOK_TITLE, BOOK_PRICE
-from adapters.demo_auth import DemoAuthAdapter, PRODUCT_TITLE, PRODUCT_PRICE
-from core.models import PriceOffer, ErrorResult
+from foxprice.adapters.demo_static import DemoStaticAdapter, BOOK_TITLE, BOOK_PRICE
+from foxprice.adapters.demo_auth import DemoAuthAdapter, PRODUCT_TITLE, PRODUCT_PRICE
+from foxprice.core.models import PriceOffer, ErrorResult
 
 pytestmark = pytest.mark.asyncio
 
