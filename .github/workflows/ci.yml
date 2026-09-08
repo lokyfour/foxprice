@@ -59,8 +59,7 @@ jobs:
       - name: Run tests
         run: |
           pytest tests/ -v \
-            --cov=core \
-            --cov=adapters \
+            --cov=foxprice \
             --cov-report=term-missing \
             --cov-fail-under=80
 
