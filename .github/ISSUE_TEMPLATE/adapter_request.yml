@@ -1,0 +1,91 @@
+name: Adapter request
+description: Request support for a new supplier portal.
+labels: [adapter]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Requesting a new adapter? Great — the more context you provide,
+        the easier it is for someone to build it.
+        Check [ADAPTER_GUIDE.md](https://github.com/lokyfour/foxprice/blob/main/ADAPTER_GUIDE.md)
+        if you want to build it yourself.
+
+  - type: input
+    id: supplier
+    attributes:
+      label: Supplier / portal name
+      placeholder: "Acme Parts Portal"
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Portal URL (if publicly accessible)
+      placeholder: "https://parts.example.com"
+
+  - type: dropdown
+    id: auth
+    attributes:
+      label: Authentication type
+      options:
+        - None (public)
+        - Login / password form
+        - SSO / SAML
+        - OAuth 2.0 / OIDC
+        - API key
+        - Unknown
+    validations:
+      required: true
+
+  - type: dropdown
+    id: antibo
+    attributes:
+      label: Anti-bot / WAF observed?
+      options:
+        - None observed
+        - Cloudflare
+        - DataDome
+        - Kasada
+        - Akamai / Imperva
+        - Other
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: data
+    attributes:
+      label: What data do you need?
+      description: List the fields you want to extract (price, stock, lead time, etc.)
+      placeholder: |
+        - Unit price (USD)
+        - Stock availability
+        - Lead time (days)
+        - Minimum order quantity
+    validations:
+      required: true
+
+  - type: textarea
+    id: volume
+    attributes:
+      label: Approximate usage
+      description: How many part numbers per run? How often?
+      placeholder: "~500 parts, daily"
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes
+      description: Quirks, pagination, JS-heavy pages, known blockers, etc.
+
+  - type: checkboxes
+    id: willing
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to build this adapter myself (with guidance)
+        - label: I can provide test credentials for development
+        - label: I am willing to test a draft adapter

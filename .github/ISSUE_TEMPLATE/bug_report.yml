@@ -1,0 +1,104 @@
+name: Bug report
+description: Something is broken — tell us what happened.
+labels: [bug]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please check [existing issues](https://github.com/lokyfour/foxprice/issues)
+        to avoid duplicates.
+
+  - type: input
+    id: version
+    attributes:
+      label: Foxprice version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: python
+    attributes:
+      label: Python version
+      options:
+        - "3.11"
+        - "3.12"
+        - "3.13"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected component
+      options:
+        - Core / Orchestrator
+        - Adapter (demo_static)
+        - Adapter (demo_auth)
+        - Adapter (custom)
+        - Pricing engine
+        - Excel reporter
+        - Web panel
+        - CLI
+        - CI / packaging
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Include the full traceback if available.
+      placeholder: |
+        I ran `python -m foxprice` and got ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Set PARTS_FILE=parts.txt
+        2. Run `python -m foxprice --adapter demo_static`
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Paste the log file content or terminal output here.
+      render: text
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate
+          required: true
+        - label: I am using Playwright ≥ 1.55.1
+          required: false
